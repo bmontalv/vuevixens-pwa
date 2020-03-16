@@ -1,10 +1,12 @@
 <template>
   <div class="home">
-    <h1>Mi lista de festivales</h1>
+    <div class="plate">
+      <p class="page-title"><span>   Mi lista de festivales   </span></p>
+    </div>
     <festival-item v-for="(item, index) in festivalList"
       :key="index"
       :festival-data="item"/>
-    <router-link to="/create-item">Añadir nuevo festival</router-link>
+    <router-link class="button" to="/create-item">Nuevo festival</router-link>
   </div>
 </template>
 
@@ -22,59 +24,7 @@ export default {
       festivalList: []
     }
   },
-  methods: {
-    // registerFCM() {
-    //   console.log("registerFCM");
-    //   navigator.serviceWorker.register('./../../public/firebase-messaging-sw.js')
-    //   .then((registration) => {
-    //     messaging.useServiceWorker(registration)
-    //     messaging.requestPermission()
-    //       .then(() => {
-    //         messaging.getToken().then(token => {
-    //           console.log(`The token is ${token}`)
-    //           // Store the token in the firebase db
-    //         })
-    //       })
-    //   }).catch(err => {
-    //     console.log(err)
-    //   })
-    // }
-  },
   mounted() {
-    // const config = {
-    //   apiKey: "AIzaSyDBRBj0L5qUGmtSopVim_VUsfFIuWns4Hk",
-    //   authDomain: "vuevixens-pwa.firebaseapp.com",
-    //   databaseURL: "https://vuevixens-pwa.firebaseio.com",
-    //   projectId: "vuevixens-pwa",
-    //   storageBucket: "vuevixens-pwa.appspot.com",
-    //   messagingSenderId: "1056270913057"
-    // };
-
-    // firebase.initializeApp(config);
-
-    // const messaging = firebase.messaging();
-
-    // messaging.usePublicVapidKey("<Public Vapid Key>")
-
-    // messaging.requestPermission().then(() => {
-    //   console.log('Notification permission granted.')
-    //   messaging.getToken().then((token) => {
-    //     console.log('New token created: ', token)
-    //     this.saveNotificationToken(token)
-    //   })
-    // }).catch((err) => {
-    //   console.log('Unable to get permission to notify.', err)
-    // })
-
-    // messaging.onTokenRefresh(function () {
-    //   messaging.getToken().then(function (newToken) {
-    //     console.log('Token refreshed: ', newToken)
-    //     this.saveNotificationToken(newToken)
-    //   }).catch(function (err) {
-    //     console.log('Unable to retrieve refreshed token ', err)
-    //   })
-    // })
-
     // Check if already has any festival item saved in localStorage
     let storageItemsKeys = Object.keys(localStorage);
     let storageItemsCounter = storageItemsKeys.length;
@@ -89,7 +39,54 @@ export default {
 </script>
 
 <style lang="scss">
+@import url(https://fonts.googleapis.com/css?family=Barrio);
+
 .home {
-  background-color: #8cb4f5;
+  padding: 10px;
+
+  .plate {
+    width: auto;
+    margin: 5% auto;
+  }
+
+  .page-title {
+    font-family: "Barrio";
+    color: black;
+    text-align: center;
+    font-size: 40px;
+    position: relative;
+    margin:0;
+  }
+
+  .page-title span {
+    background-color: white;
+    padding: 0 10px;
+  }
+
+  .page-title:before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index:-1;
+    top: 50%;
+    width: 100%;
+    border-bottom: 3px solid black;
+  }
+
+  .button {
+    background-color: #6d737a;
+    font-family: "Barrio";
+    border: none;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
 }
 </style>

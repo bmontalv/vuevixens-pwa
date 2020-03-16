@@ -37,20 +37,21 @@ export default {
   border: 1px solid;
   border-radius: 10px;
   margin: 10px;
-  background-color: #f0f2f5;
+  background-color: #b8c2e0;
 
   h1 {
       margin: 1em 0 0.5em 0;
       color: #343434;
       font-weight: bold;
-      font-family: 'Ultra', sans-serif;   
-      font-size: 36px;
+      font-family: Impact, Charcoal, sans-serif;   
+      font-size: 30px;
       line-height: 42px;
       text-transform: uppercase;
       text-shadow: 0 2px white, 0 3px #777;
     }
 
   .data-wrapper {
+    overflow-x: auto;
     display: flex;
     align-items: center;
 
@@ -66,7 +67,7 @@ export default {
     }
 
     .calendar {
-      width: 30%;
+      width: min-content;
       margin: 15px;
     }
 
@@ -84,6 +85,13 @@ export default {
       padding: 10px;
       text-align: center;
       cursor: pointer;
+    }
+  }
+
+  @media screen and (max-width: 450px) {
+    .data-wrapper {
+      margin-bottom: 5px;
+      flex-direction: column;
     }
   }
 }

@@ -17,11 +17,11 @@ _ Vuex
 - CSS Pre-processors
 - Linter / Formatter
 
-? Use history mode for router? **No**   
-? Pick a linter / formatter config: **Basic**   
-? Pick additional lint features: **Lint on save**   
-? Where do you prefer placing config for Babel, EsLint, etc.? **In package.json**   
-? Save this as a preset for future projects? **n**   
+> ? Use history mode for router? **No**   
+> ? Pick a linter / formatter config: **Basic**   
+> ? Pick additional lint features: **Lint on save**   
+> ? Where do you prefer placing config for Babel, EsLint, etc.? **In package.json**   
+> ? Save this as a preset for future projects? **n**   
 
 ### 2. Configuración de la PWA
 
@@ -40,6 +40,343 @@ Crear nuevo fichero `vue.config.js` en la raiz del proyecto (al nivel de package
 ```
 
 ### 3. Creación de la aplicación web
+
+Vamos a crear una aplicación que utilizaremos para crear nuestro listado de festivales de música favoritos, la aplicación consta de una pantalla inicialmente vacía con un botón añadir que nos redirige a la página de crear un elemento nuevo. Una vez se crea el elemeneto se almacena en el almacenamiento local de nuestro navegador. Para crear esta aplicación seguiremos lo siguientes pasos:
+
+1. Creamos un nuevo componente que será el detalle de cada elemento que se añada al listado de festivales. En la ruta src/components creamos un nuevo fichero llamamdo FestivalItem.vue con el siguiente contenido
+```
+<template>
+  <div class="festival-item-wrapper">
+    <h1>{{ festivalData.name }}</h1>
+    <div class="data-wrapper">
+      <div class="image-wrapper">
+        <img :src="festivalData.image" :alt="festivalData.name" />
+      </div>
+      <date-pick class="calendar" v-model="festivalData.date" :hasInputElement="false"></date-pick>
+      <button class="delete-button" @click="removeItem">Eliminar</button>
+    </div>
+  </div>
+</template>
+
+<script>
+import DatePick from 'vue-date-pick';
+import 'vue-date-pick/dist/vueDatePick.css';
+
+export default {
+  name: 'FestivalItem',
+  components: {
+    DatePick
+  },
+  props: {
+    festivalData: Object
+  },
+  methods: {
+    removeItem() {
+      localStorage.removeItem(this.festivalData.id)
+      location.reload()
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+.festival-item-wrapper {
+  border: 1px solid;
+  border-radius: 10px;
+  margin: 10px;
+  background-color: #b8c2e0;
+
+  h1 {
+      margin: 1em 0 0.5em 0;
+      color: #343434;
+      font-weight: bold;
+      font-family: Impact, Charcoal, sans-serif;   
+      font-size: 30px;
+      line-height: 42px;
+      text-transform: uppercase;
+      text-shadow: 0 2px white, 0 3px #777;
+    }
+
+  .data-wrapper {
+    overflow-x: auto;
+    display: flex;
+    align-items: center;
+
+    .image-wrapper {
+      position: relative;
+      margin: auto;
+      width: 30%;
+      height: auto;
+
+      img {
+        width: 100%;
+      }
+    }
+
+    .calendar {
+      width: min-content;
+      margin: 15px;
+    }
+
+    .delete-button {
+      background: red;
+      border: 1px solid #f00;
+      border-radius: 2em;
+      color: whitesmoke;
+      display: inline-block;
+      font-size: 14px;
+      font-weight: bold;
+      height: 20px;
+      line-height: 2px;
+      margin: auto;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+  }
+
+  @media screen and (max-width: 450px) {
+    .data-wrapper {
+      margin-bottom: 5px;
+      flex-direction: column;
+    }
+  }
+}
+</style>
+```
+
+2. Creamos una nueva vista para añadir un nuevo festival, esta vista consta de un formulario de tres campos: nombre, imagen y fecha. Para simplificar el fichero en el campo imagen sólo se aceptan URLs de imagen. En la ruta src/views creamos un nuevo fichero llamado CreateFestivalItem.vue con el siguiente contenido:
+```
+<template>
+  <div>
+    <p class="page-title">Introduce datos del nuevo festival</p>
+    <form
+      id="app"
+      @submit="addItem"
+    >
+      <p>
+        <label for="name">Nombre</label>
+        <input
+          id="name"
+          v-model="name"
+          type="text"
+          name="name"
+        >
+      </p>
+
+      <p>
+        <label for="age">Imagen</label>
+        <input
+          id="image"
+          v-model="image"
+          type="text"
+          name="image"
+          placeholder="URL de la imagen">
+      </p>
+
+      <p>
+        <label for="date">Fecha</label>
+        <input type="date" v-model="date" />
+      </p>
+
+      <p>
+        <input
+          class="button"
+          type="submit"
+          value="Guardar"
+        >
+      </p>
+
+    </form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'CreateFestivalItem',
+  data() {
+    return {
+      name: null,
+      image: null,
+      date: null
+    }
+  },
+  props: {
+  },
+  methods: {
+    addItem(ev) {
+      if (this.name && this.date) {
+        let id = Math.random().toString(36).substring(2, 4) + Math.random().toString(36).substring(2, 4);
+        const newFestival = {
+          id: 'festival-' + id,
+          name: this.name,
+          image: this.image,
+          date: this.date
+        }
+        localStorage.setItem('festival-' + id, JSON.stringify(newFestival))
+      }
+      ev.preventDefault();
+
+      this.$router.push('/');
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+@import url(https://fonts.googleapis.com/css?family=Barrio);
+
+.page-title {
+  font-family: "Barrio";
+  color: black;
+  text-align: center;
+  font-size: 40px;
+}
+.button {
+  background-color: #6d737a;
+  font-family: "Barrio";
+  color: white;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+label {
+  margin-right: 5px;
+}
+</style>
+```
+
+3. Modificaremos el fichero Home.vue (ubicado en la ruta src/views/) para que muestre nuestro listado de festivales y un botón con la opción de añadir. El contenido del fichero es:
+```
+<template>
+  <div class="home">
+    <div class="plate">
+      <p class="page-title"><span>   Mi lista de festivales   </span></p>
+    </div>
+    <festival-item v-for="(item, index) in festivalList"
+      :key="index"
+      :festival-data="item"/>
+    <router-link class="button" to="/create-item">Nuevo festival</router-link>
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+import FestivalItem from '@/components/FestivalItem.vue';
+
+export default {
+  name: 'Home',
+  components: {
+    FestivalItem
+  },
+  data() {
+    return {
+      festivalList: []
+    }
+  },
+  mounted() {
+    // Check if already has any festival item saved in localStorage
+    let storageItemsKeys = Object.keys(localStorage);
+    let storageItemsCounter = storageItemsKeys.length;
+
+    while ( storageItemsCounter-- ) {
+      if (storageItemsKeys[storageItemsCounter].includes('festival')) {
+        this.festivalList.push(JSON.parse(localStorage.getItem(storageItemsKeys[storageItemsCounter])))
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+@import url(https://fonts.googleapis.com/css?family=Barrio);
+
+.home {
+  padding: 10px;
+
+  .plate {
+    width: auto;
+    margin: 5% auto;
+  }
+
+  .page-title {
+    font-family: "Barrio";
+    color: black;
+    text-align: center;
+    font-size: 40px;
+    position: relative;
+    margin:0;
+  }
+
+  .page-title span {
+    background-color: white;
+    padding: 0 10px;
+  }
+
+  .page-title:before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index:-1;
+    top: 50%;
+    width: 100%;
+    border-bottom: 3px solid black;
+  }
+
+  .button {
+    background-color: #6d737a;
+    font-family: "Barrio";
+    border: none;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+}
+</style>
+```
+
+4. Por último hay que indicar las rutas de nuestra aplicación para las distintas vistas en el fichero /src/router/index.js con el siguiente contenido:
+```
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Home from '../views/Home.vue'
+
+Vue.use(VueRouter)
+
+const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/create-item',
+    name: 'create-item',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/CreateFestivalItem.vue')
+  }
+]
+
+const router = new VueRouter({
+  routes
+})
+
+export default router
+```
+
+Con esto ya tendríamos nuestra aplicación básica creada.
 
 ### 4. Ejecutar la aplicación
 Para lanzar la aplicación y poderla usar en modo PWA es necesario construir el paquete de producción para ello:
@@ -68,7 +405,7 @@ Accedemos a la consola de desarrollo del navegador e inspeccionamos la aplicaci�
 - En el ordenador: desde el navegador en la barra de la URL nos aparece la opción "instalar aplicación" y también en el menú "más opciones" del navegador nos aparece la opción de instalar.
 
 ### 5. Inlcuir notificaciones push
-para incluir este tipo de notificaciones en nustra aplicación, en primer lugar debemos tener un servicio de notificaciones, en este caso utilizaremos el servicio de Firebase y lo configuraremos de la siguiente forma:
+Para incluir este tipo de notificaciones en nustra aplicación, en primer lugar debemos tener un servidor que gestionará las notificaciones, en este caso utilizaremos el servicio de Firebase y lo configuraremos de la siguiente forma:
 
 1. Ir a la consola de firebase (https://console.firebase.google.com/?hl=es-419&pli=1), también se puede buscar en Google "Firebase".   
 2. Crear nuevo proyecto en firebase con el nombre deseado y aceptar las condiciones de uso.   
@@ -84,6 +421,23 @@ sudo npm install --save firebase
 firebase init functions
 
 firebase use --add
+
+firebase init hosting
+```
+
+En este paso se aplicará la siguiente configuración:   
+> ? What do you want to use as your public directory? **dist**   
+> ? Configure as a single-page app (rewrite all urls to /index.html)? (y/N) **y**   
+> ? File dist/index.html already exists. Overwrite? **y**   
+
+```
+firebase deploy --only hosting
+
+npm install firebase-admin --save
+
+npm run build
+
+firebase deploy
 ```
 
 5. En el pryecto creamos un nuevo fichero llamado `firebase-messaging-sw.js` en la ruta public/ con el siguiente contenido. Dónde MessagingSenderId será nuestro "Id de remitente" de firebase: 
@@ -97,7 +451,62 @@ const messaging = firebase.messaging();
 ```
 ![Firebase project configuration](documentation/images/firebase_cloud_messaging.png)
 
-6. Añadimos la configuración necesaria para enviar notificaciones en el fichero `main.js`:
+6. Creamos otro nuevo fichero llamado `firebase-config.js` en la ruta de la aplicación (en src/) con el siguiente contenido:
+```
+import firebase from 'firebase/app';
+import 'firebase/messaging';
+
+export const Firebase = {
+  init() {
+    const config = {
+      apiKey: "xxxx",
+      authDomain: "vuevixens-pwa.firebaseapp.com",
+      databaseURL: "https://vuevixens-pwa.firebaseio.com",
+      projectId: "vuevixens-pwa",
+      storageBucket: "vuevixens-pwa.appspot.com",
+      messagingSenderId: "xxxx",
+      appId: "xxxxxxxx",
+      measurementId: "xxxx"
+    };
+    
+    firebase.initializeApp(config);
+  },
+
+  messaging() {
+    const msg = firebase.messaging();
+  
+    msg.usePublicVapidKey("xxxxxx");
+
+    console.log('Set firebase messaging config')
+
+    return msg;
+  }
+}
+
+export default Firebase
+```
+
+La configuración se puede obtener de la consola de firebase: apartado "settings" --> "general", en la parte inferior "Aplicaciones web":
+![Firebase app configuration](documentation/images/firebase_config.png)
+
+Posteriormente tenemos que agregar el SDK de firebase a nuestra applicación, para ello primero debemos descargar la clave privada accediendo a la consola de firebase:
+![Firebase SDK](documentation/images/firebase_private_key.png)
+
+Guardaremos el fichero en nuestro ordenador y añadiremos esa ruta en el fichero creado anteriormente `firebase-config.js` de la siguiente forma (en este caso la ruta del fichero descargado con la clave es `/Users/bmontalvo/Documents/Vixens/firebase-adminsdk.json` ):
+```
+...
+...
+import * as admin from 'firebase-admin';
+import serviceAccount from '/Users/bmontalvo/Documents/Vixens/firebase-adminsdk.json';
+
+const config = {
+      ...
+      ...
+      credential: admin.credential.cert(serviceAccount),
+    };
+```
+
+7. Por último añadimos la configuración necesaria para enviar notificaciones en el fichero `main.js`:
 ```
 import Firebase from './firebase-config.js'
 import axios from 'axios'
@@ -192,30 +601,4 @@ const getCurrentToken = () => {
   });
 }
 ```
-
------------------
------------------
-
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+8. Para probar que las notificaciones funcionan correctamente podemos acceder a la consola de firebase y crear una nueva aplicación de prueba https://console.firebase.google.com/u/0/project/_/notification?hl=es. El token de registro FCM que se debe añadir a la notificación es el que se muestra como traza por consola en la aplicación, se pueden registrar tantos tokens como dispositivos.

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p class="page-title">Introduce datos del nuevo festival</p>
     <form
       id="app"
       @submit="addItem"
@@ -21,7 +22,7 @@
           v-model="image"
           type="text"
           name="image"
-          placeholder="Introduce URL de la imagen">
+          placeholder="URL de la imagen">
       </p>
 
       <p>
@@ -31,6 +32,7 @@
 
       <p>
         <input
+          class="button"
           type="submit"
           value="Guardar"
         >
@@ -41,8 +43,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'CreateFestivalItem',
   data() {
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     addItem(ev) {
-      if (this.name && this.image && this.date) {
+      if (this.name && this.date) {
         let id = Math.random().toString(36).substring(2, 4) + Math.random().toString(36).substring(2, 4);
         const newFestival = {
           id: 'festival-' + id,
@@ -66,69 +66,7 @@ export default {
         }
         localStorage.setItem('festival-' + id, JSON.stringify(newFestival))
       }
-      console.log(localStorage)
       ev.preventDefault();
-
-    // POST https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send HTTP/1.1
-
-    // Content-Type: application/json
-    // Authorization: Bearer ya29.ElqKBGN2Ri_Uz...PbJ_uNasm
-
-    // {
-    //   "message": {
-    //     "token" : <token of destination app>,
-    //     "notification": {
-    //       "title": "FCM Message",
-    //       "body": "This is a message from FCM"
-    //     },
-    //     "webpush": {
-    //       "headers": {
-    //         "Urgency": "high"
-    //       },
-    //       "notification": {
-    //         "body": "This is a message from FCM to web",
-    //         "requireInteraction": "true",
-    //         "badge": "/badge-icon.png"
-    //       }
-    //     }
-    //   }
-    // }
-
-      axios.post('https://fcm.googleapis.com/v1/projects/project-1056270913057/messages:send', 
-      {
-        "message": {
-          "topic": "festivales",
-          "notification": {
-            "title": "FCM Message",
-            "body": "This is a message from FCM",
-            "requireInteraction": "true"
-          },
-          "webpush": {
-            "headers": {
-              "Urgency": "high"
-            },
-            "notification": {
-              "body": "This is a message from FCM to web",
-              "requireInteraction": "true",
-              "badge": "/badge-icon.png"
-            }
-          }
-        }
-      }, 
-      {
-        headers:
-        {
-          'Authorization': 'Bearer AAAA9e6nDiE:APA91bEIlp3JEGYjQbnv6ar9pHEOeqEuU61QjjwOqoRsU8X5Lj5lzx4iXVvCmqzBfipu4xktxSxaw6cmE80unpgdc7Fgxm_bL_IYv62RZ1_RnZQ-HulalNoOJsNY999bNlB2fpnLOF8n',
-          'Content-Type': 'application/json'
-        }
-      }
-      )
-      .then(response => {
-        console.log('Success', response)
-      })
-      .catch(err => {
-        console.error(err)
-      }) 
 
       this.$router.push('/');
     }
@@ -137,5 +75,26 @@ export default {
 </script>
 
 <style lang="scss">
+@import url(https://fonts.googleapis.com/css?family=Barrio);
 
+.page-title {
+  font-family: "Barrio";
+  color: black;
+  text-align: center;
+  font-size: 40px;
+}
+.button {
+  background-color: #6d737a;
+  font-family: "Barrio";
+  color: white;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+label {
+  margin-right: 5px;
+}
 </style>
