@@ -16,7 +16,7 @@
       </p>
 
       <p>
-        <label for="age">Imagen</label>
+        <label for="image">Imagen</label>
         <input
           id="image"
           v-model="image"
@@ -64,7 +64,7 @@ export default {
           image: this.image,
           date: this.date
         }
-        localStorage.setItem('festival-' + id, JSON.stringify(newFestival))
+        localStorage.setItem(newFestival.id, JSON.stringify(newFestival))
       }
       ev.preventDefault();
 
