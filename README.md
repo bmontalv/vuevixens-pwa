@@ -9,6 +9,11 @@ Comprueba si los tienes intalado con:
 npm -v
 vue --version
 ```
+
+Si necesitas instalar los paquetes básicos:
+- Node y npm: https://nodejs.org/es/
+- Vue: `npm install -g @vue/cli`  (https://cli.vuejs.org/guide/installation.html)
+
 ### ¿Qué aplicación vamos a hacer?   
 Vamos a crear una app para listar festivales de música, la aplicación consta de una pantalla inicialmente vacía con un botón añadir que nos redirige a la página de crear un elemento nuevo, una vez creado se redirige a la página principal con el listado de elementos añadidos. El aspecto es el siguiente:
 
@@ -18,6 +23,14 @@ Vamos a crear una app para listar festivales de música, la aplicación consta d
 <br/>
 <img src="documentation/images/app_snapshot_3.png" alt="Application list" style="width:450px; border: 1px solid black;"/>    
 
+
+
+## 0. Elección del tutorial
+
+Para este tutorial se planean dos opciones:
+
+1. **Proyecto completo:** realizar el proceso completo y empezar creando el proyecto de Vue, para lo que continuaremos con estas instrucciones.
+2. **Aplicación de Vue creada**: crear una PWA a partir de la aplicación Vue con opción de PWA ya creada, para ello es necesario cambiar a la rama `main-app` y continuar con esas instrucciones.
 
 ## 1. Creación del proyecto
 Creamos un proyecto nuevo de Vue llamado `vuevixens-pwa` ejecutando en consola:
