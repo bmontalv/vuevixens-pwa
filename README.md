@@ -59,7 +59,7 @@ _ Vuex
 
 Vamos a crear una aplicación que utilizaremos para crear nuestro listado de festivales de música favoritos, la aplicación consta de una pantalla inicialmente vacía con un botón añadir que nos redirige a la página de crear un elemento nuevo. Una vez se crea el elemento se almacena en el almacenamiento local (localStorage) de nuestro navegador. Para crear esta aplicación seguiremos los siguientes pasos:
 
-1. Modificaremos el fichero Home.vue (ubicado en la ruta src/views/) para que muestre nuestra pagina principal: listado de festivales y un botón con la opción de añadir. El contenido del fichero es:
+1. Modificamos el fichero Home.vue (ubicado en la ruta src/views/) para que muestre nuestra pagina principal: listado de festivales y un botón con la opción de añadir. El contenido del fichero es:
 ```
 <template>
   <div class="home">
@@ -259,7 +259,7 @@ label {
 </style>
 ```
 
-3. Creamos un nuevo componente que será el detalle de cada elemento que se añada al listado de festivales. En la ruta src/components creamos un nuevo fichero llamamdo FestivalItem.vue con el siguiente contenido:
+3. Creamos un nuevo componente que será el detalle de cada elemento que se añade al listado de festivales. En la ruta src/components creamos un nuevo fichero llamamdo FestivalItem.vue con el siguiente contenido:
 
 primero instalamos la dependencia del componente de seleccion de fecha:   
  `npm i vue-date-pick`  
@@ -406,7 +406,7 @@ En el fichero App.vue tenemos un enrutado por defecto que nos genera Vue, podemo
 </div>
 ```
 
-Con esto ya tendríamos nuestra aplicación básica creada, la porbamos ejecutando `npm run serve` pero... ¡¡esto no es una PWA!!
+Con esto ya tendríamos nuestra aplicación básica creada, la probamos ejecutando `npm run serve` pero... ¡¡esto no es una PWA!!
 
 ## 3. Configuración de la PWA
 
@@ -429,9 +429,9 @@ module.exports = {
 ```
 
 ## 4. Ejecutar la aplicación
-Para lanzar la aplicación y poderla usar en modo PWA es necesario construir el paquete de producción para ello:
+Para lanzar la aplicación y poderla usar en modo PWA es necesario lanzarla en modo producción en el entorno local, para ello:
 
-1. Instalaremos el paquete `serve` ejecutando en la consola (comprobar si ya lo tenemos instalado con `serve -v` y nos saltamos este paso):
+1. Necesitamos el paquete `serve` que nos permitirá crear un servidor local para la lanzar la aplicación. Lo instalamos ejecutamos en la consola (podemos comprobar si ya lo tenemos instalado con `serve -v` y nos saltamos este paso):
 ```
 sudo npm install -g serve
 ```
@@ -452,20 +452,22 @@ Accedemos a la consola de desarrollo del navegador e inspeccionamos la aplicaci�
 ![Service workers](documentation/images/service_workers.png)
 
 5. Comprobamos que la aplicacioón es instalable en nuestro dispositivo:   
-- En el ordenador: desde el navegador en la barra de la URL nos aparece la opción "instalar aplicación" y también en el menú "más opciones" del navegador nos aparece la opción de instalar.
+- En el ordenador: desde el navegador, en la barra de URLs nos aparece la opción "instalar aplicación" y también en el menú "más opciones" del navegador nos aparece la opción de instalar.
 
 ## 5. Inlcuir notificaciones push
 Para incluir este tipo de notificaciones en nustra aplicación, en primer lugar debemos tener un servidor que gestionará las notificaciones, en este caso utilizaremos el servicio de Firebase y lo configuraremos de la siguiente forma:
 
 1. Ir a la consola de firebase (https://console.firebase.google.com/?hl=es-419&pli=1), también se puede buscar en Google "Firebase".   
-2. Crear nuevo proyecto en firebase con el nombre deseado y aceptar las condiciones de uso.   
+2. Crear un nuevo proyecto en firebase con el nombre deseado (vuevixens-pwa) y aceptar las condiciones de uso.   
 3. Ir a configuración, en la parte izquierda superior, pinchar sobre el icono de configuración y seleccionar “Configuración del proyecto”:
 ![Firebase project configuration](documentation/images/firebase_project_config.png)
 
 Ir a la pestaña "Cloud Messaging", al final de este apartado aparece la opción para activar los certificados push web. Hacemos click en "Generar par de claves" y nos aparecerá una clave junto con la fecha de creación.   
 
-4. En nuestro proyecto Vue también tendremos que instalar firebase. Ejecutamos en la consola los siguientes comandos:
+4. En nuestro proyecto Vue también tendremos que instalar algunas dependencias de axios (para hacer peticiones HTTP) y firebase. Ejecutamos en la consola los siguientes comandos:
 ```
+npm install axios --save
+
 sudo npm install --save firebase
 
 firebase init functions
@@ -474,9 +476,6 @@ firebase init functions
 ❯ ? Select a default Firebase project for this directory: vuevixens-pwa
 ❯ ? What language would you like to use to write Cloud Functions? (Use arrow keys): JavaScript
 ❯ ? Do you want to install dependencies with npm now? Yes
-
-npm install firebase-admin --save
-npm install axios --save
 
 npm run build
 ```
@@ -516,8 +515,6 @@ export const Firebase = {
 
   messaging() {
     const msg = firebase.messaging();
-  
-    msg.usePublicVapidKey("xxxxxx");
 
     console.log('Set firebase messaging config')
 
@@ -527,32 +524,12 @@ export const Firebase = {
 
 export default Firebase
 ```
-   
-El campo **usePublicVapidKey** se rellenará con el Cerfificado de par de claves envío web generado anteriormente:   
-![Firebase project configuration](documentation/images/firebase_push_cert.png)
 
 La configuración se puede obtener de la consola de firebase: apartado "settings" --> "general", en la parte inferior "Aplicaciones web":
 ![Firebase app configuration](documentation/images/firebase_config.png)
 
-Posteriormente tenemos que agregar el SDK de firebase a nuestra applicación, para ello primero debemos descargar la clave privada accediendo a la consola de firebase:
-![Firebase SDK](documentation/images/firebase_private_key.png)
-
-Guardaremos el fichero en nuestro ordenador y añadiremos esa ruta en el fichero creado anteriormente `firebase-config.js` de la siguiente forma (en este caso la ruta del fichero descargado con la clave es `/Users/bmontalvo/Documents/Vixens/firebase-adminsdk.json` ):
-```
-...
-...
-import * as admin from 'firebase-admin';
-import serviceAccount from '/Users/bmontalvo/Documents/Vixens/firebase-adminsdk.json';
-
-const config = {
-      ...
-      ...
-      credential: admin.credential.cert(serviceAccount),
-    };
-```
-
-7. Por último añadimos la configuración necesaria para enviar notificaciones en el fichero `main.js`:   
-Tener en cuenta que hay que sustituir el campo <App_name> en la URL de la petición por el normbre de nuestra aplicación en firebase y el campo <Clave de servidor> de la cabecera de autenticación.   
+7. Por último añadimos la configuración necesaria para enviar notificaciones en el fichero `main.js`, cuidado de no borrar la configuración ya existente:   
+Tener en cuenta que hay que sustituir el campo <App_name> en la URL de la petición por el nombre de nuestra aplicación en firebase y el campo <Clave de servidor> de la cabecera de autenticación.   
 ```
 import Firebase from './firebase-config.js'
 import axios from 'axios'
@@ -560,65 +537,52 @@ import axios from 'axios'
 Firebase.init()
 const messaging = Firebase.messaging()
 
-// [START refresh_token]
-  // Callback fired if Instance ID token is updated.
-  messaging.onTokenRefresh(() => {
-    messaging.getToken().then((refreshedToken) => {
-      // Send Instance ID token to app server.
-      sendTokenToServer(refreshedToken);
-    }).catch((err) => {
-      console.log('Unable to retrieve refreshed token ', err);
-    });
-  });
-  // [END refresh_token]
-
-  // [START receive_message]
-  // Handle incoming messages. Called when:
-  // - a message is received while the app has focus
-  // - the user clicks on an app notification created by a service worker
-  //   `messaging.setBackgroundMessageHandler` handler.
-  messaging.onMessage((payload) => {
-    console.log('Message received. ', payload);
-  });
-  // [END receive_message]
+// [START receive_message]
+// Handle incoming messages. Called when:
+// - a message is received while the app has focus
+// - the user clicks on an app notification created by a service worker
+//   `messaging.setBackgroundMessageHandler` handler.
+messaging.onMessage((payload) => {
+  console.log('Message received. ', payload);
+});
+// [END receive_message]
 
 
 
-  // Send the Instance ID token your application server, so that it can:
-  // - send messages back to this app
-  // - subscribe/unsubscribe the token from topics
-  function sendTokenToServer(currentToken) {
-    if (!isTokenSentToServer()) {
-      console.log('Sending token to server... ', currentToken);
-      axios.post('https://iid.googleapis.com/iid/v1/' + currentToken + '/rel/topics/<App_name>', '', 
+// Send the Instance ID token your application server, so that it can:
+// - send messages back to this app
+// - subscribe/unsubscribe the token from topics
+function sendTokenToServer(currentToken) {
+  if (!isTokenSentToServer()) {
+    console.log('Sending token to server... ', currentToken);
+    axios.post('https://iid.googleapis.com/iid/v1/' + currentToken + '/rel/topics/<App_name>', '', 
+    {
+      headers:
       {
-        headers:
-        {
-          'Authorization': 'Bearer <Clave de servidor>',
-          'Content-Type': 'application/json'
-        }
-      } 
-      )
-      .then(response => {
-        console.log('Success', response)
-      })
-      .catch(err => {
-        console.error(err)
-      })
-    } else {
-      console.log('Token already sent to server so won\'t send it again ' +
-          'unless it changes');
-    }
-
+        'Authorization': 'Bearer <Clave de servidor>',
+        'Content-Type': 'application/json'
+      }
+    } 
+    )
+    .then(response => {
+      console.log('Success', response)
+    })
+    .catch(err => {
+      console.error(err)
+    })
+  } else {
+    console.log('Token already sent to server so won\'t send it again ' +
+        'unless it changes');
   }
+}
 
-  function isTokenSentToServer() {
-    return window.localStorage.getItem('sentToServer') === '1';
-  }
+function isTokenSentToServer() {
+  return window.localStorage.getItem('sentToServer') === '1';
+}
 
-  function setTokenSentToServer(sent) {
-    window.localStorage.setItem('sentToServer', sent ? '1' : '0');
-  }
+function setTokenSentToServer(sent) {
+  window.localStorage.setItem('sentToServer', sent ? '1' : '0');
+}
 
 Notification.requestPermission().then((permission) => {
   if (permission === 'granted') {
@@ -632,7 +596,7 @@ Notification.requestPermission().then((permission) => {
 const getCurrentToken = () => {
   // Get Instance ID token. Initially this makes a network call, once retrieved
   // subsequent calls to getToken will return from cache.
-  messaging.getToken().then((currentToken) => {
+  messaging.getToken({ vapidKey: 'usePublicVapidKey' }).then((currentToken) => {
     if (currentToken) {
       sendTokenToServer(currentToken);
     } else {
@@ -646,12 +610,31 @@ const getCurrentToken = () => {
     setTokenSentToServer(false);
   });
 }
+
+getCurrentToken()
 ```
 
-Volvemos a generar la aplicación en modo producción y... ¡hemos terminado!   
+El valor de **clave de servidor** se puede obtener de la consola de firebase 'Configuración del proyecto' --> 'Cloud Messaging', apartado credenciales del proyecto. El **Token** es el valor por el que debe ser sustituido el texto `<Clave de servidor>`
+
+El campo **usePublicVapidKey** se rellenará con el Cerfificado de par de claves envío web generado anteriormente:   
+![Firebase project configuration](documentation/images/firebase_push_cert.png)
+
+Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) hemos terminado!   
 
 
-8. Para probar que las notificaciones funcionan correctamente podemos acceder a la consola de firebase y crear una nueva aplicación de prueba https://console.firebase.google.com/u/0/project/_/notification?hl=es. El token de registro FCM que se debe añadir a la notificación es el que se muestra como traza por consola en la aplicación, se pueden registrar tantos tokens como dispositivos.
+8. Para probar las notificaciones push tenemos que configurar el proyecto de firebase y lanzar la aplicación también con firebase:
+
+- Instalar las herramientas de fireabse ejecutando `npm install -g firebase-tools`
+
+- Iniciar sesión en firebase desde consola `firebase login` (si esta acción fallara, cerrar sesión con `firebase logout` y volver a iniciar sesión).
+
+- Seleccionar el proyecto de firebase que queremos sincronizar con nuestra app, para lo que ejecutamos en consola `firebase use --add`
+
+- Lanzar la applicación en servidor local con Firebase ejecutando ```firebase serve -p 8081```
+
+- Acceder a la consola de firebase (https://console.firebase.google.com/u/0/project/_/notification?hl=es) y crear una nueva aplicación de prueba. El token de registro FCM que se debe añadir a la notificación es el que se muestra como traza por consola en la aplicación, se pueden registrar tantos tokens como dispositivos.
+
+Nota: se podría utilizar otra herramienta en lugar de firebase para lanzar la aplicación en modo servidor en local, pero habría que sinconizarla con firebase, para simplificar esos pasos se ha decidido usar el servidor de firebase.
 
 ## Extras
 

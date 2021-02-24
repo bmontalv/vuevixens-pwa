@@ -12,7 +12,6 @@
     "core-js": "^3.6.4",
     "dns": "^0.2.2",
     "firebase": "^7.10.0",
-    "firebase-admin": "^8.9.2",
     "firebase-functions": "^3.3.0",
     "http2": "^3.3.7",
     "register-service-worker": "^1.6.2",

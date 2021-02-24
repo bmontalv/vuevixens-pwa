@@ -11,31 +11,15 @@ Vue.config.productionTip = false
 Firebase.init()
 const messaging = Firebase.messaging()
 
-// [START refresh_token]
-  // Callback fired if Instance ID token is updated.
-  messaging.onTokenRefresh(() => {
-    messaging.getToken().then((refreshedToken) => {
-      console.log('Token refreshed. ', refreshedToken);
-      // Indicate that the new Instance ID token has not yet been sent to the
-      // app server.
-      // setTokenSentToServer(false);
-      // Send Instance ID token to app server.
-      sendTokenToServer(refreshedToken);
-    }).catch((err) => {
-      console.log('Unable to retrieve refreshed token ', err);
-    });
-  });
-  // [END refresh_token]
-
-  // [START receive_message]
-  // Handle incoming messages. Called when:
-  // - a message is received while the app has focus
-  // - the user clicks on an app notification created by a service worker
-  //   `messaging.setBackgroundMessageHandler` handler.
-  messaging.onMessage((payload) => {
-    console.log('Message received. ', payload);
-  });
-  // [END receive_message]
+// [START receive_message]
+// Handle incoming messages. Called when:
+// - a message is received while the app has focus
+// - the user clicks on an app notification created by a service worker
+//   `messaging.setBackgroundMessageHandler` handler.
+messaging.onMessage((payload) => {
+console.log('Message received. ', payload);
+});
+// [END receive_message]
 
 
 
@@ -86,7 +70,7 @@ Notification.requestPermission().then((permission) => {
 const getCurrentToken = () => {
   // Get Instance ID token. Initially this makes a network call, once retrieved
   // subsequent calls to getToken will return from cache.
-  messaging.getToken().then((currentToken) => {
+  messaging.getToken({ vapidKey: 'usePublicVapidKey' }).then((currentToken) => {
     if (currentToken) {
       sendTokenToServer(currentToken);
     } else {
@@ -101,6 +85,7 @@ const getCurrentToken = () => {
   });
 }
 
+getCurrentToken()
 
 new Vue({
   router,

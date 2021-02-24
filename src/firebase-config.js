@@ -1,8 +1,5 @@
 import firebase from 'firebase/app';
 import 'firebase/messaging';
-import * as admin from 'firebase-admin';
-import serviceAccount from '<SOME_DATA>/firebase-adminsdk.json';
-
 
 export const Firebase = {
   init() {
@@ -15,7 +12,6 @@ export const Firebase = {
       messagingSenderId: "<SOME_DATA>",
       appId: "<SOME_DATA>",
       measurementId: "<SOME_DATA>",
-      credential: admin.credential.cert(serviceAccount),
     };
     
     firebase.initializeApp(config);
@@ -25,7 +21,6 @@ export const Firebase = {
   messaging() {
     const msg = firebase.messaging();
   
-    msg.usePublicVapidKey("<SOME_DATA>");
 
     console.log('Set firebase messaging config')
 
