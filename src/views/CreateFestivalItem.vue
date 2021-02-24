@@ -23,6 +23,9 @@
           type="text"
           name="image"
           placeholder="URL de la imagen">
+        <router-link to="/camera">
+          <button class="button small" >Hacer foto</button>
+        </router-link>
       </p>
 
       <p>
@@ -39,6 +42,8 @@
       </p>
 
     </form>
+
+    <!-- <img @src="'data:image/png;base64,' + dataPhoto;" alt=""> -->
   </div>
 </template>
 
@@ -56,7 +61,11 @@ export default {
   },
   methods: {
     addItem(ev) {
-      if (this.name && this.date) {
+      if (this.image === null) {
+        this.image = localStorage.getItem('currentImage')
+      }
+
+      if (this.name && this.date && this.image) {
         let id = Math.random().toString(36).substring(2, 4) + Math.random().toString(36).substring(2, 4);
         const newFestival = {
           id: 'festival-' + id,
@@ -65,10 +74,12 @@ export default {
           date: this.date
         }
         localStorage.setItem(newFestival.id, JSON.stringify(newFestival))
+        localStorage.removeItem('currentImage')
+        this.$router.push('/');
+      } else {
+        alert ('Faltan datos')
       }
       ev.preventDefault();
-
-      this.$router.push('/');
     }
   }
 }
@@ -92,9 +103,25 @@ export default {
   border-radius: 5px;
   font-weight: bold;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+  &.small {
+    margin-left: 10px;
+    font-size: 12px;
+    padding: 2px;
+  }
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 label {
   margin-right: 5px;
 }
+
+.take-picture-button {
+    position: fixed;
+    right: 24px;
+    bottom: 90px;
+    z-index: 5;
+  }
 </style>
