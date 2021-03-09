@@ -636,9 +636,10 @@ Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) h
 
 Nota: se podría utilizar otra herramienta en lugar de firebase para lanzar la aplicación en modo servidor en local, pero habría que sinconizarla con firebase, para simplificar esos pasos se ha decidido usar el servidor de firebase.
 
-## Extras
+# Sección extra para los curiosos
 
-- Añadir icono de la aplicación: añade la imagen deseada en la ruta /src/public/img/icons y añade la configuración en el fichero `vue.config.js` de la siguiente forma dentro de la clave pwa:
+## Añadir icono de la aplicación
+Añade la imagen deseada en la ruta /src/public/img/icons y añade la configuración en el fichero `vue.config.js` de la siguiente forma dentro de la clave pwa:
 ```
 iconPaths: {
       favicon32: 'img/icons/party_icon.png',
@@ -657,20 +658,178 @@ iconPaths: {
     }
 ```
 
-- Alojar la aplicación en servidor de firebase para utilizarla por https:
-```
-firebase init hosting
-```
+## Añadir la funcionalidad cámara 
+Abrir la cámara de nuestro dispositivos para poder subur la foto de nuestras entradas directamente (en la rama `extra/camera` pueden encontrar el código):
 
-En este paso se aplicará la siguiente configuración:   
-> ? What do you want to use as your public directory? **dist**   
-> ? Configure as a single-page app (rewrite all urls to /index.html)? (y/N) **y**   
-> ? File dist/index.html already exists. Overwrite? **y**   
+1. Crearemos un nuevo componente en `src/components` que lo llamaremos `CameraView.vue` que nos permitirá abrir la cámara de nuestro dispositivo mediante el API navigator y guardar la imagen en formato base64 en el localStoreage de la aplicación para poder acceder a ella, también hemos añadido un poco de estilos para que quede bonito. A continuación tenemos el código del nuevo componente:
 
-```
-firebase deploy --only hosting
+````
+<template>
+    <div class="camera-modal">
+        <video ref="video" class="camera-stream"/>
+        <div class="camera-modal-container">
+          <button class="button" @click="capture">
+            Captura
+          </button>
+        </div>
+    </div>
+</template>
 
-npm run build
+<script>
+  export default {
+    data () {
+      return {
+        mediaStream: null
+      }
+    },
+    mounted () {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(mediaStream => {
+          this.$refs.video.srcObject = mediaStream
+          this.$refs.video.play()
+          this.mediaStream = mediaStream
+        })
+        .catch(error => console.error('getUserMedia() error:', error))
+    },
+      destroyed () {
+      const tracks = this.mediaStream.getTracks()
+      tracks.map(track => track.stop())
+    },
+    methods: {
+      blobToBase64(blob, callback) {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function() {
+            const base64data = reader.result;
+            callback(base64data);
+        };
+      },
+      savePhoto(photo) {
+        localStorage.setItem('currentImage', photo)
 
-firebase deploy
-```
+      },
+      capture () {
+        const mediaStreamTrack = this.mediaStream.getVideoTracks()[0]
+        const imageCapture = new window.ImageCapture(mediaStreamTrack)
+        return imageCapture.takePhoto().then(blob => {
+          console.log(blob)
+          this.blobToBase64(blob, this.savePhoto)
+          this.$router.go(-1)
+        })
+      }
+    }
+  }
+</script>
+
+<style scoped lang="scss">
+  .camera-modal {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: white;
+    z-index: 10;
+  }
+  .camera-stream {
+    width: 100%;
+    max-height: 100%;
+  }
+
+  .camera-modal-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .button {
+      background-color: #6d737a;
+      font-family: "Barrio";
+      color: white;
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      font-weight: bold;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .take-picture-button {
+      display: flex;
+  }
+</style>
+````
+
+2. En el fichero de rutas `src/router/index.js` añadiremos la ruta correspondiente para mostrar el visor de cámara que hemos creado en el paso anterior:
+
+````
+{
+    path: '/camera',
+    name: 'camera',
+    component: CameraView
+  }
+
+````
+
+3. En la vista de creación de festival añadimos un botón que será el link para poder hacer acceder a la cámara, para ello en el fichero `src/views/CreateFestivalItem.vue` añadimos las siguientes lineas:
+
+Modificamos la sección correspondiente al input de la imagen añadiendo un componente <router-link> que contiene un botón
+````
+<p>
+  <label for="image">Imagen</label>
+  <input
+    id="image"
+    v-model="image"
+    type="text"
+    name="image"
+    placeholder="URL de la imagen">
+  <router-link to="/camera">
+    <button class="button small" >Hacer foto</button>
+  </router-link>
+</p>
+````
+
+Y modificaremos el método `addItem()` validando que contiene una imagen y borrando cuando ya no sea necesaria del localStorage, quedando con el siguiente código:
+
+````
+addItem(ev) {
+  if (this.image === null) {
+    this.image = localStorage.getItem('currentImage')
+  }
+  if (this.name && this.date && this.image) {
+    let id = Math.random().toString(36).substring(2, 4) + Math.random().toString(36).substring(2, 4);
+    const newFestival = {
+      id: 'festival-' + id,
+      name: this.name,
+      image: this.image,
+      date: this.date
+    }
+    localStorage.setItem(newFestival.id, JSON.stringify(newFestival))
+    localStorage.removeItem('currentImage')
+    this.$router.push('/');
+  } else {
+    alert ('Faltan datos')
+  }
+  ev.preventDefault();
+}
+
+````
+
+También añadiremos unos pequeños detalles de estilos para mejorar nuestro botón camera, dentro de la clase `.button` incluimos los siguientes estilos:
+
+````
+&.small {
+    margin-left: 10px;
+    font-size: 12px;
+    padding: 2px;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+````
+
+Y con esto tenemos incorporada la funcionalidad para abrir la cámara de nuestro dispositivo y poder guardar la foto en nuestra PWA. 
