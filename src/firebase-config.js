@@ -4,9 +4,9 @@ import 'firebase/messaging';
 export const Firebase = {
   init() {
     const config = {
-      apiKey: "<SOME_DATA>",
-      authDomain: "<SOME_DATA>",
-      databaseURL: "<SOME_DATA>",
+      apiKey: "AIzaSyDBRBj0L5qUGmtSopVim_VUsfFIuWns4Hk",
+      authDomain: "vuevixens-pwa.firebaseapp.com",
+      databaseURL: "https://vuevixens-pwa.firebaseio.com",
       projectId: "vuevixens-pwa",
       storageBucket: "vuevixens-pwa.appspot.com",
       messagingSenderId: "<SOME_DATA>",

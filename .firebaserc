@@ -1,6 +1,7 @@
 {
   "projects": {
     "default": "vuevixens-pwa",
-    "local": "vuevixens-pwa"
+    "local": "vuevixens-pwa",
+    "vuevixens-pwa": "vuevixens-pwa"
   }
 }

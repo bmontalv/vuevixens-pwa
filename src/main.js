@@ -33,7 +33,7 @@ console.log('Message received. ', payload);
       {
         headers:
         {
-          'Authorization': 'Bearer <Clave de servidor>',
+          'Authorization': 'Bearer AAAA9e6nDiE:APA91bEIlp3JEGYjQbnv6ar9pHEOeqEuU61QjjwOqoRsU8X5Lj5lzx4iXVvCmqzBfipu4xktxSxaw6cmE80unpgdc7Fgxm_bL_IYv62RZ1_RnZQ-HulalNoOJsNY999bNlB2fpnLOF8n',
           'Content-Type': 'application/json'
         }
       } 

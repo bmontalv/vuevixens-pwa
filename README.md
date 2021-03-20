@@ -636,6 +636,14 @@ Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) h
 
 Nota: se podría utilizar otra herramienta en lugar de firebase para lanzar la aplicación en modo servidor en local, pero habría que sinconizarla con firebase, para simplificar esos pasos se ha decidido usar el servidor de firebase.
 
+- Seleccionar el proyecto de firebase que queremos sincronizar con nuestra app, para lo que ejecutamos en consola `firebase use --add`
+
+- Lanzar la applicación en servidor local con Firebase ejecutando ```firebase serve -p 8081```
+
+- Acceder a la consola de firebase (https://console.firebase.google.com/u/0/project/_/notification?hl=es) y crear una nueva aplicación de prueba. El token de registro FCM que se debe añadir a la notificación es el que se muestra como traza por consola en la aplicación, se pueden registrar tantos tokens como dispositivos.
+
+Nota: se podría utilizar otra herramienta en lugar de firebase para lanzar la aplicación en modo servidor en local, pero habría que sinconizarla con firebase, para simplificar esos pasos se ha decidido usar el servidor de firebase.
+
 # Sección extra para los curiosos
 
 ## Añadir icono de la aplicación
