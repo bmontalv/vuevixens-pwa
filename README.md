@@ -633,7 +633,7 @@ Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) h
 
 - Inicializamos el hosting de firebase con `firebase init hosting`
 ```
-? What do you want to use as your public directory? /dist
+? What do you want to use as your public directory? dist/
 ? Configure as a single-page app (rewrite all urls to /index.html)? No
 ? File public/index.html already exists. Overwrite? n
 ```
@@ -645,11 +645,11 @@ Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) h
 ? What alias do you want to use for this project? (e.g. staging) vuevixens-pwa
 ````
 
-- Lanzar la applicación en servidor local con Firebase ejecutando ```firebase serve -p 8081```
+- Lanzar la applicación en servidor local con Firebase hosting ejecutando ```firebase deploy --only hosting```. En la consola nos aparecerá el "Hosting URL" esa será la dirección a la que tenemos que acceder (será del tipo https://vuevixens-pwa-xxxxxx.firebaseapp.com)
 
 - ¡Enviar notificación de prueba! Hay que acceder a la consola de firebase (https://console.firebase.google.com/u/0/project/_/notification?hl=es) y crear una nueva aplicación de prueba. El token de registro FCM que se debe añadir a la notificación es el que se muestra como traza por consola en la aplicación, se pueden registrar tantos tokens como dispositivos.
 
-Importante, para visualizar la notificación nuestra aplicación debe estar corriendo en segundo plano, no debemos estar viendo la aplicación en la pantalla.
+Importante, para visualizar la notificación nuestra **aplicación debe estar corriendo en segundo plano**, no debemos estar viendo la aplicación en la pantalla.
 
 Nota: se podría utilizar otra herramienta en lugar de firebase hosting para lanzar la aplicación en modo servidor en local, pero habría que sinconizarla con firebase, para simplificar esos pasos se ha decidido usar el servidor de firebase.
 
@@ -674,6 +674,9 @@ iconPaths: {
       ]
     }
 ```
+
+## Probar aplicación en otros dispositivos (en red local)
+Con un teléfono, tablet u otro dispositivo conectado a la misma red local (misma Wi-Fi) podremos acceder a la URL del hosting, podremos instalar la aplicación y probar las notificaciones.
 
 ## Añadir la funcionalidad cámara 
 Abrir la cámara de nuestro dispositivos para poder subir la foto de nuestras entradas directamente (en la rama `extra/camera` pueden encontrar el código):
