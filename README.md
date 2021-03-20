@@ -631,15 +631,6 @@ Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) h
 
 - Iniciar sesión en firebase desde consola `firebase login` (si esta acción fallara, cerrar sesión con `firebase logout` y volver a iniciar sesión).
 
-- Iniciamos el proyecto actual como proyecto firebase ejecutando `firebase init functions` y marcamos las siguientes opciones:
-````
-? Please select an option: Use an existing project
-? Select a default Firebase project for this directory: vuevixens-pwa
-? What language would you like to use to write Cloud Functions?: JavaScript
-? Do you want to use ESLint to catch probable bugs and enforce style?: n
-? Do you want to install dependencies with npm now?: y
-````
-
 - Inicializamos el hosting de firebase con `firebase init hosting`
 ```
 ? What do you want to use as your public directory? /dist
@@ -656,9 +647,11 @@ Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) h
 
 - Lanzar la applicación en servidor local con Firebase ejecutando ```firebase serve -p 8081```
 
-- Acceder a la consola de firebase (https://console.firebase.google.com/u/0/project/_/notification?hl=es) y crear una nueva aplicación de prueba. El token de registro FCM que se debe añadir a la notificación es el que se muestra como traza por consola en la aplicación, se pueden registrar tantos tokens como dispositivos.
+- ¡Enviar notificación de prueba! Hay que acceder a la consola de firebase (https://console.firebase.google.com/u/0/project/_/notification?hl=es) y crear una nueva aplicación de prueba. El token de registro FCM que se debe añadir a la notificación es el que se muestra como traza por consola en la aplicación, se pueden registrar tantos tokens como dispositivos.
 
-Nota: se podría utilizar otra herramienta en lugar de firebase para lanzar la aplicación en modo servidor en local, pero habría que sinconizarla con firebase, para simplificar esos pasos se ha decidido usar el servidor de firebase.
+Importante, para visualizar la notificación nuestra aplicación debe estar corriendo en segundo plano, no debemos estar viendo la aplicación en la pantalla.
+
+Nota: se podría utilizar otra herramienta en lugar de firebase hosting para lanzar la aplicación en modo servidor en local, pero habría que sinconizarla con firebase, para simplificar esos pasos se ha decidido usar el servidor de firebase.
 
 # Sección extra para los curiosos
 
