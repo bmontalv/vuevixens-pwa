@@ -271,7 +271,9 @@ Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) h
 
 - Lanzar la applicación en servidor local con Firebase hosting ejecutando ```firebase deploy --only hosting```. En la consola nos aparecerá el "Hosting URL" esa será la dirección a la que tenemos que acceder (será del tipo https://vuevixens-pwa-xxxxxx.firebaseapp.com)
 
-- ¡Enviar notificación de prueba! Hay que acceder a la consola de firebase (https://console.firebase.google.com/u/0/project/_/notification?hl=es) y crear una nueva aplicación de prueba. El token de registro FCM que se debe añadir a la notificación es el que se muestra como traza por consola en la aplicación, se pueden registrar tantos tokens como dispositivos.
+- ¡Enviar notificación de prueba! Hay que acceder a la consola de firebase (https://console.firebase.google.com/u/0/project/_/notification?hl=es) y crear una nueva aplicación de prueba. El token de registro FCM que se debe añadir en la consola de notificación es el que se muestra como traza por consola en nuestra aplicación después del texto "Sending token to the server...", se pueden registrar tantos tokens como dispositivos.
+
+![FCM Token](documentation/images/token_FCM.png)
 
 Importante, para visualizar la notificación nuestra **aplicación debe estar corriendo en segundo plano**, no debemos estar viendo la aplicación en la pantalla.
 
