@@ -470,15 +470,6 @@ Ir a la pestaña "Cloud Messaging", al final de este apartado aparece la opción
 npm install axios --save
 
 sudo npm install --save firebase
-
-firebase init functions
-
-❯ ? Please select an option: Use an existing project
-❯ ? Select a default Firebase project for this directory: vuevixens-pwa
-❯ ? What language would you like to use to write Cloud Functions? (Use arrow keys): JavaScript
-❯ ? Do you want to install dependencies with npm now? Yes
-
-npm run build
 ```
 
 
@@ -630,6 +621,8 @@ Ya tenemos toda la configuración necesaria en nuestra aplicación... ¡(casi) h
 - Instalar las herramientas de fireabse ejecutando `npm install -g firebase-tools` (se puede comprobar primero si ya lo tenemos instalado con `firebase tools --version`)
 
 - Iniciar sesión en firebase desde consola `firebase login` (si esta acción fallara, cerrar sesión con `firebase logout` y volver a iniciar sesión).
+
+- Construir proyecto en modo producción con toda la configuración de firebase `npm run build`
 
 - Inicializamos el hosting de firebase con `firebase init hosting`
 ```
