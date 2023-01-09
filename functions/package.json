@@ -12,7 +12,7 @@
     "node": "8"
   },
   "dependencies": {
-    "firebase-functions": "^3.3.0"
+    "firebase-functions": "^3.24.1"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.1.6"
